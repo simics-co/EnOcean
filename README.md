@@ -18,7 +18,7 @@ SiMICS製のEnOcean Shield (TCM410J)を使って、EnOceanの無線通信デー�
 ### サンプルプログラム: SimpleDisplay
 EnOcean Shield (TCM410J)で受信した無線データを、シリアルモニタ上へ表示します
 
-![Demo](https://github.com/simics-co/EnOcean/wiki/images/demo.png "Demo")
+![Demo](extra/images/demo.png "Demo")
 
 ## VS. DolphinView
 
@@ -36,7 +36,7 @@ EnOcean Shield (TCM410J)で受信した無線データを、シリアルモニ�
  ※あらかじめ、下記Installを済ませておいてください
 
 1. Arduino IDEのメニューバーから「ファイル->スケッチの例->EnOcean->SimpleDisplay」を選択します<br>
-![Select sketch](https://github.com/simics-co/EnOcean/wiki/images/selectSketch.png "Select sketch")
+![Select sketch](extra/images/selectSketch.png "Select sketch")
 
 ※スケッチをマイコンボードに書き込むときは、EnOcean ShieldのSW3を「Prog」側にしてください。通常はSW3を「Normal」側にしてください。
 
@@ -45,11 +45,11 @@ EnOcean Shield (TCM410J)で受信した無線データを、シリアルモニ�
 1. [GitHub repository](https://github.com/simics-co/EnOcean)から[EnOcean-master.zip](https://github.com/simics-co/EnOcean/archive/master.zip)をダウンロードします
 2. 圧縮ファイルを展開し、フォルダ名を「EnOcean」へ変更します
 3. Arduino IDEのメニューバーから「スケッチ->ライブラリを使用->ライブラリをインストール...」を選択します<br>
-![Install library](https://github.com/simics-co/EnOcean/wiki/images/1_installLibrary.png "Install library")
+![Install library](extra/images/1_installLibrary.png "Install library")
 
 4. インストールするフォルダ「EnOcean」を選択します<br>
-![Select folder](https://github.com/simics-co/EnOcean/wiki/images/2_selectFolder.png "Select folder")<br>
-![Completed install](https://github.com/simics-co/EnOcean/wiki/images/3_completedInstall.png "Completed install")
+![Select folder](extra/images/2_selectFolder.png "Select folder")<br>
+![Completed install](extra/images/3_completedInstall.png "Completed install")
 
 5. インストールしたライブラリとArduinoの既存ライブラリが競合するため、<br>
 [Arduinoインストールフォルダ]\hardware\arduino\avr\cores\arduino\HardwareSerial0.cpp
