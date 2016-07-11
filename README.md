@@ -27,7 +27,8 @@ EnOcean Shield (TCM410J)で受信した無線データを、シリアルモニ�
 
 ## Requirement
 
-* Arduino IDE 1.7.2以降のバージョンを使用してください
+* [Arduino LLC (Arduino.cc)](https://www.arduino.cc/)の場合、Arduino IDE 1.6.1以降のバージョンを使用してください
+* [Arduino SRL (Arduino.org)](http://www.arduino.org/)の場合、Arduino IDE 1.7.2以降のバージョンを使用してください
 
 ## Usage
 
@@ -51,7 +52,7 @@ EnOcean Shield (TCM410J)で受信した無線データを、シリアルモニ�
 ![Select folder](extra/images/2_selectFolder.png "Select folder")<br>
 ![Completed install](extra/images/3_completedInstall.png "Completed install")
 
-5. インストールしたライブラリとArduinoの既存ライブラリが競合するため、<br>
+5. ESP8266以外の場合、インストールしたライブラリとArduinoの既存ライブラリが競合するため、<br>
 [Arduinoインストールフォルダ]\hardware\arduino\avr\cores\arduino\HardwareSerial0.cpp
 内の「ISR(USART\_RX\_vect)」をコメントアウトします<br>
 ※本ライブラリでは、受信データの取りこぼしを回避するため、USART受信完了割り込み処理：ISR(USART\_RX\_vect)を追加しています<p>

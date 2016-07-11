@@ -148,6 +148,9 @@ ESP3Parser::ESP3Parser(AfterReceivedTel pAfterReceived)
 
 void ESP3Parser::initialization()
 {
+  Serial.println("                                   ");
+  Serial.println("                                   ");
+  Serial.println("");
   Serial.println("    ID     R-ORG     Data       dBm");
   Serial.println("------------------------------------");
   
