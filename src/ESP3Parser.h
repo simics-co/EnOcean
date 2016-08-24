@@ -4,7 +4,7 @@
 #include "Arduino.h"
 #include "SerialCommunication.h"
 
-typedef void (*AfterReceivedTel)(uint8_t/*rorg*/, uint32_t/* ID */, uint32_t/* data */);
+typedef void (*AfterReceivedTel)(uint8_t/*rorg*/, uint32_t/* ID */, uint32_t/* data */, uint8_t/* rssi */);
 
 #define START_BYTE 0x55
 #define RORG_RPS 0x00

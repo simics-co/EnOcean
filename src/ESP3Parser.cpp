@@ -528,7 +528,7 @@ static uint8_t decodeCrc8d(char aChar)
   uint32_t data = getPayload();
   
   if(pReceivedOpe != NULL) {
-    (*pReceivedOpe)(rorg, ID, data);
+    (*pReceivedOpe)(rorg, ID, data, rssi);
   }
 
   if ((rorg == RORG_RPS) || (rorg == RORG_1BS) || (rorg == RORG_4BS)) { // RPS 1BS 4BS
