@@ -27,8 +27,8 @@ EnOcean Shield (TCM410J)で受信した無線データを、シリアルモニ�
 
 ## Requirement
 
-* [Arduino LLC (Arduino.cc)](https://www.arduino.cc/)の場合、Arduino IDE 1.6.1以降のバージョンを使用してください
-* [Arduino SRL (Arduino.org)](http://www.arduino.org/)の場合、Arduino IDE 1.7.2以降のバージョンを使用してください
+* [Arduino LLC (Arduino.cc)](https://www.arduino.cc/)製品の場合、Arduino IDE 1.6.1以降のバージョンを使用してください
+* [Arduino SRL (Arduino.org)](http://www.arduino.org/)製品の場合、Arduino IDE 1.7.2以降のバージョンを使用してください
 
 ## Usage
 

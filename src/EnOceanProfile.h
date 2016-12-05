@@ -11,6 +11,7 @@ enum EEP_TYPE {
   EEP_A5_02_30,     /* Temperature Sensor */
   EEP_A5_07_01,     /* Occupancy Sensor */
   EEP_A5_08_02,     /* Occupancy Sensor */
+  EEP_A5_09_04,     /* CO2 Sensor */
   EEP_TYPE_MAX
 }; 
 
@@ -20,6 +21,8 @@ public:
   uint8_t getSwitchStatus(EEP_TYPE type, uint32_t dataRPS);
   uint8_t getContact(EEP_TYPE type, uint32_t data1BS);
   float getTemperature(EEP_TYPE type, uint32_t data4BS);
+  float getHumidity(EEP_TYPE type, uint32_t data4BS);
+  uint16_t getCO2(EEP_TYPE type, uint32_t data4BS);
   uint8_t getPIRStatus(EEP_TYPE type, uint32_t data4BS);
 
 private:
