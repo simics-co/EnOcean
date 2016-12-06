@@ -9,7 +9,7 @@ SiMICS製のEnOcean Shield (TCM410J)を使って、EnOceanの無線通信デー�
 以下のEnOceanプロトコルに対応しています。
 
 * ESP3 Packet Type 10: RADIO_ERP2
-* EEP: RPS, 1BS, 4BS<br>
+* EEP: RPS, 1BS, 4BS, VLD(Max.4bytes)<br>
 ※CRC8のチェックは省いています<br>
 ※Repeater経由のデータには対応していません
 

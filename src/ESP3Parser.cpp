@@ -34,6 +34,7 @@ static uint8_t exHeader;
 static uint8_t exTelType;
 static uint8_t senderId[4];
 static uint8_t payload[4];
+static uint8_t lengthPayload;
 static uint8_t lengthOptData;
 static uint8_t rssi;
 static AfterReceivedTel pReceivedOpe;
@@ -232,6 +233,20 @@ static void prettyPrint()
         Serial.print(" ");
       }
       break;
+      
+    case 4: /* VLD Telegram */
+      Serial.print("   VLD   ");
+      for(i = 0; i < lengthPayload; i++) {
+        if((payload[i] & 0xF0) == 0x00) {
+          Serial.print((payload[i] & 0xF0), HEX);
+        }
+        Serial.print(payload[i], HEX);
+        Serial.print(" ");
+      }
+      for(i = 0; i < (4 - lengthPayload); i++) {
+        Serial.print("   ");
+      }
+      break;
   }
   
   Serial.print("  -");
@@ -291,6 +306,7 @@ static uint8_t decodeCrc8h(char aChar)
 static uint8_t decodeHeader(char aChar)
 {
   uint8_t state;
+  dataLength--;
   header = aChar;
   rorg = header & 0x0F;
   
@@ -322,6 +338,7 @@ static uint8_t decodeHeader(char aChar)
 static uint8_t decodeExHeader(char aChar)
 {
   uint8_t state;
+  dataLength--;
   exHeader = aChar;
   
   if(rorg == 0xFF) {
@@ -347,6 +364,7 @@ static uint8_t decodeExHeader(char aChar)
 static uint8_t decodeExTelType(char aChar)
 {
   uint8_t state;
+  dataLength--;
   exTelType = aChar;
   
   switch((header >> 5) & 0x07) {
@@ -366,18 +384,21 @@ static uint8_t decodeExTelType(char aChar)
 /* STATE_ORG_ID_1 */
 static uint8_t decodeOrgId1(char aChar)
 {
+  dataLength--;
   return STATE_ORG_ID_2;
 }
 
 /* STATE_ORG_ID_2 */
 static uint8_t decodeOrgId2(char aChar)
 {
+  dataLength--;
   return STATE_ORG_ID_3;
 }
 
 /* STATE_ORG_ID_3 */
 static uint8_t decodeOrgId3(char aChar)
 {
+  dataLength--;
   senderId[0] = aChar;
   return STATE_ORG_ID_4;
 }
@@ -385,6 +406,7 @@ static uint8_t decodeOrgId3(char aChar)
 /* STATE_ORG_ID_4 */
 static uint8_t decodeOrgId4(char aChar)
 {
+  dataLength--;
   senderId[1] = aChar;
   return STATE_ORG_ID_5;
 }
@@ -392,6 +414,7 @@ static uint8_t decodeOrgId4(char aChar)
 /* STATE_ORG_ID_5 */
 static uint8_t decodeOrgId5(char aChar)
 {
+  dataLength--;
   senderId[2] = aChar;
   return STATE_ORG_ID_6;
 }
@@ -400,6 +423,7 @@ static uint8_t decodeOrgId5(char aChar)
 static uint8_t decodeOrgId6(char aChar)
 {
   uint8_t state;
+  dataLength--;
   senderId[3] = aChar;
   
   if(((header >> 5) & 0x07) == 0x02) {
@@ -413,24 +437,28 @@ static uint8_t decodeOrgId6(char aChar)
 /* STATE_DST_ID_1 */
 static uint8_t decodeDstId1(char aChar)
 {
+  dataLength--;
   return STATE_DST_ID_2;
 }
 
 /* STATE_DST_ID_2 */
 static uint8_t decodeDstId2(char aChar)
 {
+  dataLength--;
   return STATE_DST_ID_3;
 }
 
 /* STATE_DST_ID_3 */
 static uint8_t decodeDstId3(char aChar)
 {
+  dataLength--;
   return STATE_DST_ID_4;
 }
 
 /* STATE_DST_ID_4 */
 static uint8_t decodeDstId4(char aChar)
 {
+  dataLength--;
   return STATE_PAYLOAD_1;
 }
 
@@ -438,10 +466,12 @@ static uint8_t decodeDstId4(char aChar)
 static uint8_t decodePayload1(char aChar)
 {
   uint8_t state;
+  dataLength--;
   payload[0] = aChar;
   
-  if((rorg == RORG_RPS) || (rorg == RORG_1BS)) {
-    lengthOptData = exHeader & 0x0F;
+  lengthOptData = exHeader & 0x0F;
+  if((rorg == RORG_RPS) || (rorg == RORG_1BS) || ((rorg == RORG_VLD) && (dataLength == (lengthOptData + 1)))) {
+    lengthPayload = 1;
     if(lengthOptData > 0) {
       state = STATE_OPTIONAL_DATA;
     } else {
@@ -456,32 +486,59 @@ static uint8_t decodePayload1(char aChar)
 /* STATE_PAYLOAD_2 */
 static uint8_t decodePayload2(char aChar)
 {
-  payload[1] = aChar;
-  return STATE_PAYLOAD_3;
-}
-
-/* STATE_PAYLOAD_3 */
-static uint8_t decodePayload3(char aChar)
-{
-  payload[2] = aChar;
-  return STATE_PAYLOAD_4;
-}
-
-/* STATE_PAYLOAD_4 */
-static uint8_t decodePayload4(char aChar)
-{
   uint8_t state;
-  payload[3] = aChar;
+  dataLength--;
+  payload[1] = aChar;
   
-  if(rorg == RORG_4BS) {
-    lengthOptData = exHeader & 0x0F;
+  if((rorg == RORG_VLD) && (dataLength == (lengthOptData + 1))) {
+    lengthPayload = 2;
     if(lengthOptData > 0) {
       state = STATE_OPTIONAL_DATA;
     } else {
       state = STATE_CRC;
     }
   } else {
-    /* Ignore except for RPS, 1BS, 4BS */
+    state = STATE_PAYLOAD_3;
+  }
+  return state;
+}
+
+/* STATE_PAYLOAD_3 */
+static uint8_t decodePayload3(char aChar)
+{
+  uint8_t state;
+  dataLength--;
+  payload[2] = aChar;
+  
+  if((rorg == RORG_VLD) && (dataLength == (lengthOptData + 1))) {
+    lengthPayload = 3;
+    if(lengthOptData > 0) {
+      state = STATE_OPTIONAL_DATA;
+    } else {
+      state = STATE_CRC;
+    }
+  } else {
+    state = STATE_PAYLOAD_4;
+  }
+  return state;
+}
+
+/* STATE_PAYLOAD_4 */
+static uint8_t decodePayload4(char aChar)
+{
+  uint8_t state;
+  dataLength--;
+  payload[3] = aChar;
+  
+  if((rorg == RORG_4BS) || ((rorg == RORG_VLD) && (dataLength == (lengthOptData + 1)))) {
+    lengthPayload = 4;
+    if(lengthOptData > 0) {
+      state = STATE_OPTIONAL_DATA;
+    } else {
+      state = STATE_CRC;
+    }
+  } else {
+    /* Ignore except for RPS, 1BS, 4BS, VLD(4bytes and less) */
     state = STATE_SYNC;
     reset();
   }
@@ -531,7 +588,7 @@ static uint8_t decodeCrc8d(char aChar)
     (*pReceivedOpe)(rorg, ID, data, rssi);
   }
 
-  if ((rorg == RORG_RPS) || (rorg == RORG_1BS) || (rorg == RORG_4BS)) { // RPS 1BS 4BS
+  if ((rorg == RORG_RPS) || (rorg == RORG_1BS) || (rorg == RORG_4BS) || (rorg == RORG_VLD)) { // RPS 1BS 4BS VLD
     prettyPrint();
   }
   
